@@ -26,6 +26,7 @@ router.post("/", authenticateToken, async (req, res) => {
 
     res.status(201).json(newTask);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Error adding task" });
   }
 });

@@ -1,0 +1,35 @@
+.Login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.Login-Block {
+  border: solid gray 1px;
+  border-radius: 4px;
+  height: 300px;
+  padding: 20px;
+}
+
+.Login-input {
+  display: block;
+  width: 90%;
+  padding: 8px;
+  border: solid gray 1px;
+  border-radius: 4px;
+  margin-bottom: 18px;
+}
+
+.Login-heading {
+  text-align: center;
+}
+
+.Login-Button {
+  display: block;
+  width: 97%;
+  padding: 8px;
+  border: solid gray 1px;
+  border-radius: 4px;
+  margin-bottom: 18px;
+}

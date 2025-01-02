@@ -1,0 +1,86 @@
+.h1 {
+  color: red;
+  display: inline-block;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.pagination button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.ind-todo {
+  display: flex;
+  flex-direction: row;
+  font-size: larger;
+  width: 400px;
+  padding: 5px;
+  justify-content: space-evenly;
+  background-color: gainsboro;
+}
+
+.todos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.active {
+  color: red;
+  font-size: medium;
+  background-color: gainsboro;
+  border-radius: 100%;
+  margin: auto;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.unactive {
+  margin: auto;
+  cursor: pointer;
+}
+
+.todo {
+  color: red;
+}
+
+.done {
+  color: green;
+}
+.doing {
+  color: black;
+}

@@ -57,4 +57,8 @@ const SearchBar = () => {
   );
 };
 
+<<<<<<< HEAD
 export default SearchBar;
+=======
+export default SearchBar;
+>>>>>>> karthik_feature_branch

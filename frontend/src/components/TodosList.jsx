@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
+import SearchBar from "./SearchBar";
 import "./TodosList.css";
 import axios from "axios";
 
@@ -8,13 +9,15 @@ const TodosList = () => {
   const [data, setData] = useState([]);
   const [range, setRange] = useState(0);
   const [lengthofpages, setlength] = useState([]);
+  const [filteredTodos, setFilteredTodos] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const ITEMS_PER_PAGE = 5;
 
   async function fetchData() {
     try {
       const res = await axios.get("http://localhost:5000/tasks", {
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
       setIsAuthenticated(true);
@@ -25,7 +28,7 @@ const TodosList = () => {
     }
   }
   useEffect(() => {
-    if (!sessionStorage.getItem("authToken")) {
+    if (!localStorage.getItem("authToken")) {
       setIsAuthenticated(false);
       return;
     }
@@ -33,14 +36,23 @@ const TodosList = () => {
   }, []);
 
   useEffect(() => {
-    let len = Math.floor(data.length / 5);
-    if (len % 5 !== 0) {
+    let len = Math.floor(filteredTodos.length / 5);
+    // console.log(len + "  len");
+    // console.log((len % 5) + "  len%5");
+    if (filteredTodos.length - len * 5 !== 0) {
       len++;
     }
     const numbers = Array.from({ length: len }, (_, index) => index + 1);
     setlength(numbers);
-    // console.log(numbers);
-  }, [data]);
+    setRange(0);
+    console.log(numbers + "   number");
+  }, [filteredTodos]);
+
+  useEffect(() => {
+    if (searchQuery.length === 0) {
+      setFilteredTodos(data);
+    }
+  }, [searchQuery]);
 
   if (isAuthenticated === false) {
     return <Navigate to={"/login"} />;
@@ -67,7 +79,7 @@ const TodosList = () => {
         },
         {
           headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         }
       );
@@ -76,11 +88,19 @@ const TodosList = () => {
       console.log(e);
     }
   }
-  const paginatedData = data.slice(range, range + ITEMS_PER_PAGE);
-  console.log(range);
+  const paginatedData = filteredTodos.slice(range, range + ITEMS_PER_PAGE);
+  // console.log(filteredTodos);
+  console.log(localStorage.getItem("authToken"));
   return (
     <div className="container">
       <h1>List of All TODOS Created</h1>
+      <SearchBar
+        filteredTodos={filteredTodos}
+        setFilteredTodos={setFilteredTodos}
+        data={data}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
       <div className="todos-list">
         {paginatedData.map((item, index) => (
           <div key={index} className="ind-todo">
@@ -140,10 +160,12 @@ const TodosList = () => {
         <button
           onClick={() =>
             setRange((prev) =>
-              prev + ITEMS_PER_PAGE < data.length ? prev + ITEMS_PER_PAGE : prev
+              prev + ITEMS_PER_PAGE < filteredTodos.length
+                ? prev + ITEMS_PER_PAGE
+                : prev
             )
           }
-          disabled={range + ITEMS_PER_PAGE >= data.length}
+          disabled={range + ITEMS_PER_PAGE >= filteredTodos.length}
         >
           &gt;
         </button>

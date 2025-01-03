@@ -7,12 +7,35 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate(); // Create a navigate function
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
-    console.log("Signup username:", username, "email:", email, "password:", password);
 
-    // After successful signup (e.g., after calling an API), navigate to the next page
-    navigate("/search"); // Redirect to the search page
+    try {
+      const response = await fetch("http://localhost:5000/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Signup successful:", data.message);
+        // Redirect or navigate to another page if needed
+
+        navigate("/");
+      } else {
+        console.error("Signup error:", data.error);
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+    }
   };
 
   return (

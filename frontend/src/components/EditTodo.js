@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./Edit.css";
 
-
 const EditTodo = ({ task, onSave, onCancel }) => {
   const [newTaskValue, setNewTaskValue] = useState(task.task);
 
@@ -16,7 +15,7 @@ const EditTodo = ({ task, onSave, onCancel }) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         }
       );
@@ -49,4 +48,3 @@ const EditTodo = ({ task, onSave, onCancel }) => {
 };
 
 export default EditTodo;
-

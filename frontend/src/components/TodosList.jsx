@@ -2,15 +2,13 @@ import React, { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
-import SearchBar from "./SearchBar"; // Import the SearchBar component
 import EditTodo from "./EditTodo";
 import DeleteTodo from "./DeleteTodo";
 import "./TodosList.css";
- 
+
 const TodosList = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [data, setData] = useState([]);
-  const [filteredTodos, setFilteredTodos] = useState([]);
   const [range, setRange] = useState(0);
   const [lengthofpages, setLength] = useState([]);
   const [editingTask, setEditingTask] = useState(null); // State for edit modal
@@ -51,7 +49,7 @@ const TodosList = () => {
       len++;
     }
     const numbers = Array.from({ length: len }, (_, index) => index + 1);
-    setlength(numbers);
+    setLength(numbers);
     setRange(0);
     console.log(numbers + "   number");
   }, [filteredTodos]);
@@ -71,7 +69,7 @@ const TodosList = () => {
   }
 
   // Get the current page data
-  function handlePagechange(ind) {
+  function handlePageChange(ind) {
     console.log(ind);
     setRange(ind * 5);
   }
@@ -196,5 +194,3 @@ const TodosList = () => {
 };
 
 export default TodosList;
-
-

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const SearchBar = ({
   data,
@@ -31,7 +31,7 @@ const SearchBar = ({
         type="text"
         placeholder="Search tasks..."
         value={searchQuery}
-        onChange={handleSearch}
+        onChange={(e) => setSearchQuery(e.target.value)}
         className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
       <div className="mt-4">
@@ -44,4 +44,3 @@ const SearchBar = ({
 };
 
 export default SearchBar;
-

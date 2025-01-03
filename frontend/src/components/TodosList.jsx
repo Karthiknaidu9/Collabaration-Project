@@ -1,13 +1,19 @@
-import { Navigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import "./TodosList.css";
+import { Navigate } from "react-router-dom";
 import axios from "axios";
+import SearchBar from "./SearchBar"; // Import the SearchBar component
+import EditTodo from "./EditTodo";
+import DeleteTodo from "./DeleteTodo";
+import "./TodosList.css";
 
 const TodosList = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [data, setData] = useState([]);
+  const [filteredTodos, setFilteredTodos] = useState([]);
   const [range, setRange] = useState(0);
-  const [lengthofpages, setlength] = useState([]);
+  const [lengthofpages, setLength] = useState([]);
+  const [editingTask, setEditingTask] = useState(null); // State for edit modal
+  const [deletingTask, setDeletingTask] = useState(null); // State for delete modal
   const ITEMS_PER_PAGE = 5;
 
   async function fetchData() {
@@ -19,11 +25,13 @@ const TodosList = () => {
       });
       setIsAuthenticated(true);
       setData(res.data);
+      setFilteredTodos(res.data); // Initialize filteredTodos
     } catch (error) {
       console.error("Error fetching tasks:", error);
       setIsAuthenticated(false);
     }
   }
+
   useEffect(() => {
     if (!sessionStorage.getItem("authToken")) {
       setIsAuthenticated(false);
@@ -33,14 +41,28 @@ const TodosList = () => {
   }, []);
 
   useEffect(() => {
-    let len = Math.floor(data.length / 5);
-    if (len % 5 !== 0) {
-      len++;
-    }
+    let len = Math.ceil(filteredTodos.length / ITEMS_PER_PAGE);
     const numbers = Array.from({ length: len }, (_, index) => index + 1);
-    setlength(numbers);
-    // console.log(numbers);
-  }, [data]);
+    setLength(numbers);
+  }, [filteredTodos]);
+
+  async function handleStatuschange(e, item) {
+    try {
+      const newStatus = e.target.value;
+      await axios.put(
+        `http://localhost:5000/tasks/${item._id}`,
+        { task: item.task, status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      fetchData(); // Refresh data after updating status
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  }
 
   if (isAuthenticated === false) {
     return <Navigate to={"/login"} />;
@@ -50,48 +72,25 @@ const TodosList = () => {
     return <div>Loading...</div>;
   }
 
-  // Get the current page data
-  function handlePagechange(ind) {
-    console.log(ind);
-    setRange(ind * 5);
+  function handlePageChange(ind) {
+    setRange(ind * ITEMS_PER_PAGE);
   }
-  async function handleStatuschange(e, item) {
-    console.log(e.target.value);
-    console.log(item);
-    try {
-      await axios.put(
-        `http://localhost:5000/tasks/${item._id}`,
-        {
-          task: item.task,
-          status: e.target.value,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
-          },
-        }
-      );
-      fetchData();
-    } catch (e) {
-      console.log(e);
-    }
-  }
-  const paginatedData = data.slice(range, range + ITEMS_PER_PAGE);
-  console.log(range);
+
+  const paginatedData = filteredTodos.slice(range, range + ITEMS_PER_PAGE);
+
   return (
     <div className="container">
       <h1>List of All TODOS Created</h1>
+      <SearchBar todos={data} setFilteredTodos={setFilteredTodos} />
       <div className="todos-list">
         {paginatedData.map((item, index) => (
           <div key={index} className="ind-todo">
             <div>{item.task}</div>
             <div>
               <select
-                id={`options-${index}`} // Unique ID for each dropdown
+                id={`options-${index}`}
                 value={item.status}
-                onChange={(e) => {
-                  handleStatuschange(e, item);
-                }}
+                onChange={(e) => handleStatuschange(e, item)}
                 style={{ marginLeft: "10px", padding: "5px" }}
                 className={`${item.status}`}
               >
@@ -106,8 +105,8 @@ const TodosList = () => {
               </select>
             </div>
             <div className="buttons">
-              <button>Edit</button>
-              <button>Delete</button>
+              <button onClick={() => setEditingTask(item)}>Edit</button>
+              <button onClick={() => setDeletingTask(item)}>Delete</button>
             </div>
           </div>
         ))}
@@ -119,37 +118,60 @@ const TodosList = () => {
         >
           &lt;
         </button>
-        {lengthofpages &&
-          lengthofpages.length > 0 &&
-          lengthofpages.map((item, index) => {
-            return (
-              <div
-                className={`${
-                  Math.floor(range / 5) + 1 === index + 1
-                    ? "active"
-                    : "unactive"
-                }`}
-                onClick={() => handlePagechange(index)}
-                key={index}
-              >
-                {index + 1}
-              </div>
-            );
-          })}
-
+        {lengthofpages.map((item, index) => (
+          <div
+            className={`${
+              Math.floor(range / ITEMS_PER_PAGE) + 1 === index + 1
+                ? "active"
+                : "unactive"
+            }`}
+            onClick={() => handlePageChange(index)}
+            key={index}
+          >
+            {index + 1}
+          </div>
+        ))}
         <button
           onClick={() =>
             setRange((prev) =>
-              prev + ITEMS_PER_PAGE < data.length ? prev + ITEMS_PER_PAGE : prev
+              prev + ITEMS_PER_PAGE < filteredTodos.length
+                ? prev + ITEMS_PER_PAGE
+                : prev
             )
           }
-          disabled={range + ITEMS_PER_PAGE >= data.length}
+          disabled={range + ITEMS_PER_PAGE >= filteredTodos.length}
         >
           &gt;
         </button>
       </div>
+
+      {/* EditTodo Modal */}
+      {editingTask && (
+        <EditTodo
+          task={editingTask}
+          onSave={() => {
+            fetchData();
+            setEditingTask(null);
+          }}
+          onCancel={() => setEditingTask(null)}
+        />
+      )}
+
+      {/* DeleteTodo Modal */}
+      {deletingTask && (
+        <DeleteTodo
+          task={deletingTask}
+          onDeleteSuccess={() => {
+            fetchData();
+            setDeletingTask(null);
+          }}
+          onCancel={() => setDeletingTask(null)}
+        />
+      )}
     </div>
   );
 };
 
 export default TodosList;
+
+

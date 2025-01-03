@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import "./TodosList.css";
+import SearchBar from "./SearchBar";
+import { Navigate } from "react-router-dom";
 import axios from "axios";
-import SearchBar from "./SearchBar"; // Import the SearchBar component
 import EditTodo from "./EditTodo";
 import DeleteTodo from "./DeleteTodo";
 import "./TodosList.css";
@@ -9,9 +9,12 @@ import "./TodosList.css";
 const TodosList = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [data, setData] = useState([]);
-  const [filteredTodos, setFilteredTodos] = useState([]);
   const [range, setRange] = useState(0);
-  const [lengthofpages, setlength] = useState([]);
+  const [lengthofpages, setLength] = useState([]);
+  const [editingTask, setEditingTask] = useState(null); // State for edit modal
+  const [deletingTask, setDeletingTask] = useState(null); // State for delete modal
+  const [filteredTodos, setFilteredTodos] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const ITEMS_PER_PAGE = 5;
 
   async function fetchData() {
@@ -39,14 +42,23 @@ const TodosList = () => {
   }, []);
 
   useEffect(() => {
-    let len = Math.floor(data.length / 5);
-    if (len % 5 !== 0) {
+    let len = Math.floor(filteredTodos.length / 5);
+    // console.log(len + "  len");
+    // console.log((len % 5) + "  len%5");
+    if (filteredTodos.length - len * 5 !== 0) {
       len++;
     }
     const numbers = Array.from({ length: len }, (_, index) => index + 1);
-    setlength(numbers);
-    // console.log(numbers);
-  }, [data]);
+    setLength(numbers);
+    setRange(0);
+    console.log(numbers + "   number");
+  }, [filteredTodos]);
+
+  useEffect(() => {
+    if (searchQuery.length === 0) {
+      setFilteredTodos(data);
+    }
+  }, [searchQuery]);
 
   if (isAuthenticated === false) {
     return <Navigate to={"/login"} />;
@@ -57,7 +69,7 @@ const TodosList = () => {
   }
 
   // Get the current page data
-  function handlePagechange(ind) {
+  function handlePageChange(ind) {
     console.log(ind);
     setRange(ind * 5);
   }
@@ -78,11 +90,19 @@ const TodosList = () => {
       console.error("Error updating status:", error);
     }
   }
-  const paginatedData = data.slice(range, range + ITEMS_PER_PAGE);
-  console.log(range);
+  const paginatedData = filteredTodos.slice(range, range + ITEMS_PER_PAGE);
+  // console.log(filteredTodos);
+  console.log(localStorage.getItem("authToken"));
   return (
     <div className="container">
       <h1>List of All TODOS Created</h1>
+      <SearchBar
+        filteredTodos={filteredTodos}
+        setFilteredTodos={setFilteredTodos}
+        data={data}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+      />
       <div className="todos-list">
         {paginatedData.map((item, index) => (
           <div key={index} className="ind-todo">

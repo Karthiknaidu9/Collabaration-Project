@@ -16,7 +16,7 @@ const EditTodo = ({ task, onSave, onCancel }) => {
         },
         {
           headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         }
       );

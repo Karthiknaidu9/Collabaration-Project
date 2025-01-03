@@ -7,7 +7,7 @@ const DeleteTodo = ({ task, onDeleteSuccess, onCancel }) => {
     try {
       await axios.delete(`http://localhost:5000/tasks/${task._id}`, {
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
       onDeleteSuccess();

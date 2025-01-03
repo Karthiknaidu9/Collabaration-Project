@@ -11,10 +11,43 @@ const Signup = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    console.log("Signup username:", username, "email:", email, "password:", password);
 
-    // After successful signup (e.g., after calling an API), navigate to the next page
-    navigate("/search"); // Redirect to the search page
+    try {
+      const response = await fetch("http://localhost:5000/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Signup successful:", data.message);
+        // Redirect or navigate to another page if needed
+        try {
+          const res = await axios.post("http://localhost:5000/auth/login", {
+            email,
+            password,
+          });
+          localStorage.setItem("authToken", res.data.token);
+          alert("sugnup successful");
+        } catch (e) {
+          console.log(e);
+          alert("signup failed");
+        }
+        navigate("/search");
+      } else {
+        console.error("Signup error:", data.error);
+      }
+    } catch (error) {
+      console.error("Error during signup:", error);
+    }
   };
 
   return (
@@ -65,3 +98,5 @@ const Signup = () => {
 };
 
 export default Signup;
+
+

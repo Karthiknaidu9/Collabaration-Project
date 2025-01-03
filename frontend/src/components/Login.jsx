@@ -17,7 +17,7 @@ export default function LoginPage() {
         email,
         password,
       });
-      sessionStorage.setItem("authToken", res.data.token);
+      localStorage.setItem("authToken", res.data.token);
       alert("Login successful");
       setRedirect(true);
     } catch (e) {

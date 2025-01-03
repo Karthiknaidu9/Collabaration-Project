@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import "./TodosList.css";
 import axios from "axios";
 import SearchBar from "./SearchBar"; // Import the SearchBar component
 import EditTodo from "./EditTodo";
@@ -11,16 +11,14 @@ const TodosList = () => {
   const [data, setData] = useState([]);
   const [filteredTodos, setFilteredTodos] = useState([]);
   const [range, setRange] = useState(0);
-  const [lengthofpages, setLength] = useState([]);
-  const [editingTask, setEditingTask] = useState(null); // State for edit modal
-  const [deletingTask, setDeletingTask] = useState(null); // State for delete modal
+  const [lengthofpages, setlength] = useState([]);
   const ITEMS_PER_PAGE = 5;
 
   async function fetchData() {
     try {
       const res = await axios.get("http://localhost:5000/tasks", {
         headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
       setIsAuthenticated(true);
@@ -33,7 +31,7 @@ const TodosList = () => {
   }
 
   useEffect(() => {
-    if (!sessionStorage.getItem("authToken")) {
+    if (!localStorage.getItem("authToken")) {
       setIsAuthenticated(false);
       return;
     }
@@ -41,28 +39,14 @@ const TodosList = () => {
   }, []);
 
   useEffect(() => {
-    let len = Math.ceil(filteredTodos.length / ITEMS_PER_PAGE);
-    const numbers = Array.from({ length: len }, (_, index) => index + 1);
-    setLength(numbers);
-  }, [filteredTodos]);
-
-  async function handleStatuschange(e, item) {
-    try {
-      const newStatus = e.target.value;
-      await axios.put(
-        `http://localhost:5000/tasks/${item._id}`,
-        { task: item.task, status: newStatus },
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
-          },
-        }
-      );
-      fetchData(); // Refresh data after updating status
-    } catch (error) {
-      console.error("Error updating status:", error);
+    let len = Math.floor(data.length / 5);
+    if (len % 5 !== 0) {
+      len++;
     }
-  }
+    const numbers = Array.from({ length: len }, (_, index) => index + 1);
+    setlength(numbers);
+    // console.log(numbers);
+  }, [data]);
 
   if (isAuthenticated === false) {
     return <Navigate to={"/login"} />;
@@ -72,16 +56,33 @@ const TodosList = () => {
     return <div>Loading...</div>;
   }
 
-  function handlePageChange(ind) {
-    setRange(ind * ITEMS_PER_PAGE);
+  // Get the current page data
+  function handlePagechange(ind) {
+    console.log(ind);
+    setRange(ind * 5);
   }
-
-  const paginatedData = filteredTodos.slice(range, range + ITEMS_PER_PAGE);
-
+  async function handleStatuschange(e, item) {
+    try {
+      const newStatus = e.target.value;
+      await axios.put(
+        `http://localhost:5000/tasks/${item._id}`,
+        { task: item.task, status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        }
+      );
+      fetchData(); // Refresh data after updating status
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  }
+  const paginatedData = data.slice(range, range + ITEMS_PER_PAGE);
+  console.log(range);
   return (
     <div className="container">
       <h1>List of All TODOS Created</h1>
-      <SearchBar todos={data} setFilteredTodos={setFilteredTodos} />
       <div className="todos-list">
         {paginatedData.map((item, index) => (
           <div key={index} className="ind-todo">

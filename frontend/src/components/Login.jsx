@@ -14,17 +14,16 @@ export default function LoginPage() {
 
   const isLoggedIn = localStorage.getItem("authToken");
 
-
   const validateEmail = (email) => {
-    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/; 
+    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
     return emailRegex.test(email);
   };
 
   const validatePassword = (password) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,22}$/; 
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,22}$/;
     return passwordRegex.test(password);
   };
-
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -96,7 +95,7 @@ export default function LoginPage() {
             onChange={(ev) => setEmail(ev.target.value)} // Update username
             className="Login-input"
           />
-           {emailError && <p className="error-message">{emailError}</p>}
+          {emailError && <p className="error-message">{emailError}</p>}
           <input
             type="password"
             placeholder="password"
@@ -117,4 +116,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

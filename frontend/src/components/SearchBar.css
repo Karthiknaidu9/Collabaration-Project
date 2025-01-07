@@ -1,0 +1,26 @@
+.search-container {
+  width: 25%;
+  margin-right: 40px;
+  padding: 16px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.search-input:focus {
+  box-shadow: 0 0 0 2px #60a5fa;
+}
+
+.results-container {
+  margin-top: 16px;
+}
+
+.no-tasks {
+  color: #6b7280;
+}

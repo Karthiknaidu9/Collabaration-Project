@@ -1,13 +1,27 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import './Signup.css'; 
+import React, { useEffect, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import { usePopup } from "../contexts/PopupContext.jsx";
+import "./Signup.css";
 import axios from "axios";
 
 const Signup = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { showPopup } = usePopup();
   const navigate = useNavigate();
+
+  const isLoggedIn = localStorage.getItem("authToken");
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      showPopup("You have already have an account....");
+    }
+  }, []);
+
+  if (isLoggedIn) {
+    return <Navigate to={"/"} />;
+  }
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -85,10 +99,7 @@ const Signup = () => {
               className="signup-input"
             />
           </div>
-          <button
-            type="submit"
-            className="signup-button"
-          >
+          <button type="submit" className="signup-button">
             Signup
           </button>
         </form>
@@ -98,5 +109,3 @@ const Signup = () => {
 };
 
 export default Signup;
-
-

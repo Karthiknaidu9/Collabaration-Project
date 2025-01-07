@@ -4,14 +4,15 @@ import "./App.css";
 import TodosList from "./components/TodosList.jsx";
 import Signup from "./components/SignupTemp.js";
 
-
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<TodosList />}></Route>
-      <Route path="/register" element={<Signup/>}></Route>
-      <Route path="/login" element={<Login />}></Route>
-    </Routes>
+    <div className="appcontainer">
+      <Routes>
+        <Route path="/" element={<TodosList />}></Route>
+        <Route path="/register" element={<Signup />}></Route>
+        <Route path="/login" element={<Login />}></Route>
+      </Routes>
+    </div>
   );
 }
 

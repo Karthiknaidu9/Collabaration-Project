@@ -5,6 +5,10 @@ import axios from "axios";
 import EditTodo from "./EditTodo";
 import DeleteTodo from "./DeleteTodo";
 import "./TodosList.css";
+import Logout from "./Logout";
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import { usePopup } from "../contexts/PopupContext";
 
 const TodosList = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -15,6 +19,8 @@ const TodosList = () => {
   const [deletingTask, setDeletingTask] = useState(null); // State for delete modal
   const [filteredTodos, setFilteredTodos] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { showPopup } = usePopup();
+
   const ITEMS_PER_PAGE = 5;
 
   async function fetchData() {
@@ -35,6 +41,7 @@ const TodosList = () => {
 
   useEffect(() => {
     if (!localStorage.getItem("authToken")) {
+      showPopup("You need login or signup first....");
       setIsAuthenticated(false);
       return;
     }
@@ -95,7 +102,10 @@ const TodosList = () => {
   console.log(localStorage.getItem("authToken"));
   return (
     <div className="container">
-      <h1>List of All TODOS Created</h1>
+      <div className="header">
+        <h1>List of All TODOS Created</h1>
+        <Logout setIsAuthenticated={setIsAuthenticated} />
+      </div>
       <SearchBar
         filteredTodos={filteredTodos}
         setFilteredTodos={setFilteredTodos}
@@ -106,28 +116,36 @@ const TodosList = () => {
       <div className="todos-list">
         {paginatedData.map((item, index) => (
           <div key={index} className="ind-todo">
-            <div>{item.task}</div>
-            <div>
-              <select
-                id={`options-${index}`}
-                value={item.status}
-                onChange={(e) => handleStatuschange(e, item)}
-                style={{ marginLeft: "10px", padding: "5px" }}
-                className={`${item.status}`}
-              >
-                <option value={item.status}>{item.status}</option>
-                {["todo", "doing", "done"]
-                  .filter((status) => status !== item.status)
-                  .map((status, i) => (
-                    <option key={i} value={status} className={`${status}`}>
-                      {status}
-                    </option>
-                  ))}
-              </select>
-            </div>
-            <div className="buttons">
-              <button onClick={() => setEditingTask(item)}>Edit</button>
-              <button onClick={() => setDeletingTask(item)}>Delete</button>
+            <div className="taskname">{item.task}</div>
+            <div className="task-actions">
+              <div className="buttons">
+                <MdEdit
+                  className="edit-icon"
+                  onClick={() => setEditingTask(item)}
+                />
+                <MdDelete
+                  className="delete-icon"
+                  onClick={() => setDeletingTask(item)}
+                />
+              </div>
+              <div className="status-dropdown">
+                <select
+                  id={`options-${index}`}
+                  value={item.status}
+                  onChange={(e) => handleStatuschange(e, item)}
+                  style={{ marginLeft: "10px", padding: "5px" }}
+                  className={`${item.status}`}
+                >
+                  <option value={item.status}>{item.status}</option>
+                  {["todo", "doing", "done"]
+                    .filter((status) => status !== item.status)
+                    .map((status, i) => (
+                      <option key={i} value={status} className={`${status}`}>
+                        {status}
+                      </option>
+                    ))}
+                </select>
+              </div>
             </div>
           </div>
         ))}
@@ -166,7 +184,6 @@ const TodosList = () => {
         </button>
       </div>
 
-      {/* EditTodo Modal */}
       {editingTask && (
         <EditTodo
           task={editingTask}

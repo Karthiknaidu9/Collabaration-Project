@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./SearchBar.css";
 
 const SearchBar = ({
   data,
@@ -26,17 +27,17 @@ const SearchBar = ({
     }
   }, [searchQuery, todos]);
   return (
-    <div className="p-4">
+    <div className="search-container">
       <input
         type="text"
         placeholder="Search tasks..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="search-input"
       />
-      <div className="mt-4">
+      <div className="results-container">
         {filteredTodos.length === 0 && (
-          <p className="text-gray-500">No tasks found</p>
+          <p className="no-tasks">No tasks found</p>
         )}
       </div>
     </div>

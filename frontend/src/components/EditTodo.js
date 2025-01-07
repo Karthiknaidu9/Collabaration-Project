@@ -20,7 +20,7 @@ const EditTodo = ({ task, onSave, onCancel }) => {
         }
       );
       onSave();
-    } catch (e) {
+    }catch (e) {
       console.log("Error updating task:", e);
     }
   };
@@ -28,7 +28,7 @@ const EditTodo = ({ task, onSave, onCancel }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2>Edit Task</h2>
+        <h2 className="edit-heading">Edit Task</h2>
         <textarea
           value={newTaskValue}
           onChange={(e) => setNewTaskValue(e.target.value)}

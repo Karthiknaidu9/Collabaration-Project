@@ -1,14 +1,26 @@
 import { Link, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { usePopup } from "../contexts/PopupContext";
 import "./Login.css";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
+  const { showPopup } = usePopup();
 
-  console.log(email + " working");
+  const isLoggedIn = localStorage.getItem("authToken");
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      showPopup("You have already logged in....");
+    }
+  }, []);
+
+  if (isLoggedIn) {
+    return <Navigate to={"/"} />;
+  }
 
   async function handleLoginSubmit(ev) {
     ev.preventDefault();
@@ -25,6 +37,10 @@ export default function LoginPage() {
       alert("Login failed");
     }
   }
+  // if (localStorage.getItem("authToken")) {
+  //   showPopup("You have ready loggedin....");
+  //   return <Navigate to={"/"} />;
+  // }
 
   if (redirect) {
     return <Navigate to={"/"} />;
@@ -50,7 +66,7 @@ export default function LoginPage() {
             className="Login-input"
           />
           <button className="Login-Button">Login</button>
-          <div>
+          <div className="register-nav">
             Don't have an account yet?{" "}
             <Link className="underline text-black" to={"/register"}>
               Register now

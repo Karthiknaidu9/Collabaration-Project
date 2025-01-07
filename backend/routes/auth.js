@@ -8,6 +8,7 @@ const router = express.Router();
 router.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
+    console.log(username);
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -40,7 +41,7 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, username: user.username },
+      { id: user._id, username: user.username, email: user.email,  joinDate: user.joinDate},
       process.env.JWT_SECRET
     );
 

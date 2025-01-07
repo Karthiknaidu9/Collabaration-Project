@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import "./Delete.css";
 
-const DeleteTodo = ({ task, onDeleteSuccess, onCancel }) => {
+const DeleteTodo = ({ task, onDeleteSuccess, onCancel, setSearchQuery }) => {
   const handleDelete = async () => {
     try {
       await axios.delete(`http://localhost:5000/tasks/${task._id}`, {
@@ -10,6 +10,7 @@ const DeleteTodo = ({ task, onDeleteSuccess, onCancel }) => {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
+      setSearchQuery(""); 
       onDeleteSuccess();
     } catch (e) {
       console.log("Error deleting task:", e);
@@ -34,4 +35,5 @@ const DeleteTodo = ({ task, onDeleteSuccess, onCancel }) => {
 };
 
 export default DeleteTodo;
+
 

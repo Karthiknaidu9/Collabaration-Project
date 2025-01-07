@@ -9,10 +9,16 @@ const SearchBar = ({
 }) => {
   const [todos, setTodos] = useState([]);
 
+  // Validation for special characters
+  const validateSearchQuery = (query) => {
+    const specialCharRegex = /[^\w\s]/; // Matches any character that is not a letter, digit, or whitespace
+    return !specialCharRegex.test(query);
+  };
+
   useEffect(() => {
     setTodos(data);
     setFilteredTodos(data);
-  }, []);
+  }, [data, setFilteredTodos]);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -24,14 +30,22 @@ const SearchBar = ({
         )
       );
     }
-  }, [searchQuery, todos]);
+  }, [searchQuery, todos, setFilteredTodos]);
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    if (validateSearchQuery(value)) {
+      setSearchQuery(value);
+    }
+  };
+
   return (
     <div className="p-4">
       <input
         type="text"
         placeholder="Search tasks..."
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={handleSearchChange}
         className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
       <div className="mt-4">
@@ -44,4 +58,5 @@ const SearchBar = ({
 };
 
 export default SearchBar;
+
 

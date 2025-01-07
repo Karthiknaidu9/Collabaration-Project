@@ -31,12 +31,29 @@
     border-radius: 5px;
   }
   
+  .textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+  
+  .error-border {
+    border-color: red;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 0.85rem;
+    margin: 0 0 10px 0;
+  }
+  
   .modal-buttons {
     display: flex;
     justify-content: space-around;
   }
   
-  .btn-save, .btn-cancel {
+  .btn-save,
+  .btn-cancel {
     padding: 8px 15px;
     border: none;
     border-radius: 5px;
@@ -48,8 +65,14 @@
     color: white;
   }
   
+  .btn-save:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }
+  
   .btn-cancel {
     background-color: #f44336;
     color: white;
   }
+  
   

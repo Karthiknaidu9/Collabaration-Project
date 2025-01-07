@@ -1,13 +1,11 @@
-/* Center the signup form vertically and horizontally */
 .signup-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f7fafc; /* Background color */
+    background-color: #f7fafc;
   }
   
-  /* Style the signup form box */
   .signup-form {
     width: 100%;
     max-width: 400px;
@@ -15,10 +13,9 @@
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e2e8f0; /* Border color */
+    border: 1px solid #e2e8f0;
   }
   
-  /* Heading style */
   .signup-form h2 {
     font-size: 1.5rem;
     font-weight: bold;
@@ -26,27 +23,33 @@
     margin-bottom: 1.5rem;
   }
   
-  /* Input field styles */
   .signup-input {
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
-    border: 1px solid #d1d5db; /* Border color */
+    border: 1px solid #d1d5db;
     border-radius: 8px;
     transition: border 0.2s ease-in-out;
   }
   
   .signup-input:focus {
     outline: none;
-    border-color: #3b82f6; /* Focused border color */
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2); /* Focused box-shadow */
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
   }
   
-  /* Submit button styles */
+  .signup-input.error {
+    border-color: red;
+  }
+  
+  .signup-input.success {
+    border-color: green;
+  }
+  
   .signup-button {
     width: 100%;
     padding: 0.75rem;
-    background-color: #3b82f6; /* Button background color */
+    background-color: #3b82f6;
     color: white;
     border: none;
     border-radius: 8px;
@@ -55,12 +58,20 @@
   }
   
   .signup-button:hover {
-    background-color: #2563eb; /* Button hover color */
+    background-color: #2563eb;
   }
   
-  /* Alert styles */
-  .alert {
+  .error-message {
     color: red;
+    font-size: 0.875rem;
+  }
+  
+  .tick-mark {
+    position: absolute;
+    margin-top: -30px;
+    margin-left: -25px;
+    color: green;
     font-weight: bold;
   }
+  
   

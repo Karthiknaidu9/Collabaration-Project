@@ -5,16 +5,17 @@ import TodosList from "./components/TodosList.jsx";
 import Signup from "./components/SignupTemp.js";
 import Profile from "./components/Profile.js";
 
-
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<TodosList />}></Route>
-      <Route path="/register" element={<Signup/>}></Route>
-      <Route path="/login" element={<LoginPage />}></Route>
-      <Route path="/profile" element={<Profile />}></Route>
-
-    </Routes>
+   
+    <div className="appcontainer">
+      <Routes>
+        <Route path="/" element={<TodosList />}></Route>
+        <Route path="/register" element={<Signup />}></Route>
+        <Route path="/login" element={<LoginPage />}></Route>
+        <Route path="/profile" element={<Profile />}></Route>
+      </Routes>
+    </div>
   );
 }
 

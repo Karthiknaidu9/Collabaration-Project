@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import React, { useEffect, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import { usePopup } from "../contexts/PopupContext.jsx";
 import "./Signup.css";
 import axios from "axios";
 
@@ -8,7 +10,9 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ username: "", email: "", password: "" });
+  const { showPopup } = usePopup();
   const navigate = useNavigate();
+
 
   const validateUsername = (value) => /^[a-zA-Z]+$/.test(value);
   const validateEmail = (value) => /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(value);
@@ -27,6 +31,20 @@ const Signup = () => {
     }
     setErrors((prev) => ({ ...prev, [field]: error }));
   };
+  
+  
+
+  const isLoggedIn = localStorage.getItem("authToken");
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      showPopup("You have already have an account....");
+    }
+  }, []);
+
+  if (isLoggedIn) {
+    return <Navigate to={"/"} />;
+  }
 
   const handleSignup = async (e) => {
     e.preventDefault();

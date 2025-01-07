@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./SearchBar.css";
 
 const SearchBar = ({
   data,
@@ -9,16 +10,10 @@ const SearchBar = ({
 }) => {
   const [todos, setTodos] = useState([]);
 
-  // Validation for special characters
-  const validateSearchQuery = (query) => {
-    const specialCharRegex = /[^\w\s]/; // Matches any character that is not a letter, digit, or whitespace
-    return !specialCharRegex.test(query);
-  };
-
   useEffect(() => {
     setTodos(data);
     setFilteredTodos(data);
-  }, [data, setFilteredTodos]);
+  }, []);
 
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -30,27 +25,19 @@ const SearchBar = ({
         )
       );
     }
-  }, [searchQuery, todos, setFilteredTodos]);
-
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    if (validateSearchQuery(value)) {
-      setSearchQuery(value);
-    }
-  };
-
+  }, [searchQuery, todos]);
   return (
-    <div className="p-4">
+    <div className="search-container">
       <input
         type="text"
         placeholder="Search tasks..."
         value={searchQuery}
-        onChange={handleSearchChange}
-        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        onChange={(e) => setSearchQuery(e.target.value)}
+        className="search-input"
       />
-      <div className="mt-4">
+      <div className="results-container">
         {filteredTodos.length === 0 && (
-          <p className="text-gray-500">No tasks found</p>
+          <p className="no-tasks">No tasks found</p>
         )}
       </div>
     </div>
@@ -58,5 +45,3 @@ const SearchBar = ({
 };
 
 export default SearchBar;
-
-

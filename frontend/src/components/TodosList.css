@@ -3,12 +3,24 @@
   display: inline-block;
 }
 
+.header {
+  width: 100vw;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
 .container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  background-color: #b9b8d7;
   width: 100vw;
+  height: 100vh;
 }
 
 .pagination {
@@ -43,20 +55,56 @@
   flex-direction: row;
   font-size: larger;
   width: 400px;
-  padding: 5px;
-  justify-content: space-evenly;
+  padding: 10px;
+  align-items: center;
+  justify-content: space-between;
   background-color: gainsboro;
+  border-radius: 5px;
+}
+
+.taskname {
+  /* flex: 0.6; */
+  display: flex;
+  justify-content: center;
+  padding-left: 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-actions {
+  display: flex;
+  /* flex: 0.4; */
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 10px;
+  min-width: 150px;
 }
 
 .todos-list {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 20px;
 }
 
 .buttons {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.delete-icon {
+  cursor: pointer;
+}
+
+.edit-icon {
+  cursor: pointer;
 }
 
 .active {
@@ -87,7 +135,7 @@
 .username-display {
   position: absolute;
   top: 10px;
-  right: 20px;
+  right: 140px;
   font-size: 18px;
   font-weight: bold;
   color: #333;

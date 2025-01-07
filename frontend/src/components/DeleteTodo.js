@@ -10,7 +10,6 @@ const DeleteTodo = ({ task, onDeleteSuccess, onCancel, setSearchQuery }) => {
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
       });
-      setSearchQuery(""); 
       onDeleteSuccess();
     } catch (e) {
       console.log("Error deleting task:", e);
@@ -20,7 +19,7 @@ const DeleteTodo = ({ task, onDeleteSuccess, onCancel, setSearchQuery }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2>Are you sure you want to delete this task?</h2>
+        <h2 className="delete-heading">Are you sure you want to delete this task?</h2>
         <div className="modal-buttons">
           <button onClick={handleDelete} className="btn-delete">
             Yes, Delete
@@ -35,5 +34,3 @@ const DeleteTodo = ({ task, onDeleteSuccess, onCancel, setSearchQuery }) => {
 };
 
 export default DeleteTodo;
-
-

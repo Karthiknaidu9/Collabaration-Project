@@ -6,6 +6,10 @@ import axios from "axios";
 import EditTodo from "./EditTodo";
 import DeleteTodo from "./DeleteTodo";
 import "./TodosList.css";
+import Logout from "./Logout";
+import { MdEdit } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import { usePopup } from "../contexts/PopupContext";
 
 const TodosList = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -16,10 +20,12 @@ const [joinDate, setJoinDate] = useState("");
   const [data, setData] = useState([]);
   const [range, setRange] = useState(0);
   const [lengthofpages, setLength] = useState([]);
-  const [editingTask, setEditingTask] = useState(null);
-  const [deletingTask, setDeletingTask] = useState(null);
+  const [editingTask, setEditingTask] = useState(null); // State for edit modal
+  const [deletingTask, setDeletingTask] = useState(null); // State for delete modal
   const [filteredTodos, setFilteredTodos] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const { showPopup } = usePopup();
+
   const ITEMS_PER_PAGE = 5;
 
   // For navigation to profile
@@ -63,6 +69,7 @@ const [joinDate, setJoinDate] = useState("");
     }
   
     if (!localStorage.getItem("authToken")) {
+      showPopup("You need login or signup first....");
       setIsAuthenticated(false);
       return;
     }
@@ -72,8 +79,14 @@ const [joinDate, setJoinDate] = useState("");
   
 
   useEffect(() => {
-    const totalPages = Math.ceil(filteredTodos.length / ITEMS_PER_PAGE);
-    setLength(Array.from({ length: totalPages }, (_, i) => i + 1));
+    let len = Math.floor(filteredTodos.length / 5);
+    // console.log(len + "  len");
+    // console.log((len % 5) + "  len%5");
+    if (filteredTodos.length - len * 5 !== 0) {
+      len++;
+    }
+    const numbers = Array.from({ length: len }, (_, index) => index + 1);
+    setLength(numbers);
     setRange(0);
   }, [filteredTodos]);
 
@@ -107,7 +120,7 @@ const [joinDate, setJoinDate] = useState("");
           },
         }
       );
-      fetchData();
+      fetchData(); // Refresh data after updating status
     } catch (error) {
       console.error("Error updating status:", error);
     }
@@ -117,14 +130,19 @@ const [joinDate, setJoinDate] = useState("");
 
   return (
     <div className="container">
-      <header>
-        {/* Make the username clickable to navigate to the profile */}
+      {/* <header>
         <div className="username-display" onClick={navigateToProfile} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>
   Profile
 </div>
 
-      </header>
-      <h1>List of All TODOS Created</h1>
+      </header> */}
+      <div className="header">
+        <h1>List of All TODOS Created</h1>
+        <div className="username-display" onClick={navigateToProfile} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>
+  Profile
+</div>
+        <Logout setIsAuthenticated={setIsAuthenticated} />
+      </div>
       <SearchBar
         filteredTodos={filteredTodos}
         setFilteredTodos={setFilteredTodos}
@@ -135,27 +153,36 @@ const [joinDate, setJoinDate] = useState("");
       <div className="todos-list">
         {paginatedData.map((task, index) => (
           <div key={index} className="ind-todo">
-            <div>{task.task}</div>
-            <div>
-              <select
-                value={task.status}
-                onChange={(e) => handleStatusChange(e, task)}
-                className={`${task.status}`}
-                style={{ marginLeft: "10px", padding: "5px" }}
-              >
-                <option value={task.status}>{task.status}</option>
-                {["todo", "doing", "done"]
-                  .filter((status) => status !== task.status)
-                  .map((status, i) => (
-                    <option key={i} value={status} className={`${status}`}>
-                      {status}
-                    </option>
-                  ))}
-              </select>
-            </div>
-            <div className="buttons">
-              <button onClick={() => setEditingTask(task)}>Edit</button>
-              <button onClick={() => setDeletingTask(task)}>Delete</button>
+            <div className="taskname">{task.task}</div>
+            <div className="task-actions">
+              <div className="buttons">
+                <MdEdit
+                  className="edit-icon"
+                  onClick={() => setEditingTask(task)}
+                />
+                <MdDelete
+                  className="delete-icon"
+                  onClick={() => setDeletingTask(task)}
+                />
+              </div>
+              <div className="status-dropdown">
+                <select
+                  id={`options-${index}`}
+                  value={task.status}
+                  onChange={(e) => handleStatusChange(e, task)}
+                  style={{ marginLeft: "10px", padding: "5px" }}
+                  className={`${task.status}`}
+                >
+                  <option value={task.status}>{task.status}</option>
+                  {["todo", "doing", "done"]
+                    .filter((status) => status !== task.status)
+                    .map((status, i) => (
+                      <option key={i} value={status} className={`${status}`}>
+                        {status}
+                      </option>
+                    ))}
+                </select>
+              </div>
             </div>
           </div>
         ))}
@@ -206,8 +233,8 @@ const [joinDate, setJoinDate] = useState("");
           task={deletingTask}
           onDeleteSuccess={() => {
             fetchData();
-            setFilteredTodos(data);
             setDeletingTask(null);
+            setSearchQuery("");
           }}
           onCancel={() => setDeletingTask(null)}
         />
@@ -217,8 +244,3 @@ const [joinDate, setJoinDate] = useState("");
 };
 
 export default TodosList;
-
-
-
-
-

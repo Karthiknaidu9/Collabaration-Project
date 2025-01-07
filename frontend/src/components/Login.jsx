@@ -8,9 +8,23 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const { showPopup } = usePopup();
 
   const isLoggedIn = localStorage.getItem("authToken");
+
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/; 
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,22}$/; 
+    return passwordRegex.test(password);
+  };
+
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -24,6 +38,27 @@ export default function LoginPage() {
 
   async function handleLoginSubmit(ev) {
     ev.preventDefault();
+
+    let isValid = true;
+
+    if (!validateEmail(email)) {
+      setEmailError("Invalid email format (lowercase only).");
+      isValid = false;
+    } else {
+      setEmailError("");
+    }
+
+    if (!validatePassword(password)) {
+      setPasswordError(
+        "Password must be 8-22 characters, include 1 uppercase, 1 lowercase, 1 number, and 1 special character."
+      );
+      isValid = false;
+    } else {
+      setPasswordError("");
+    }
+
+    if (!isValid) return;
+
     try {
       const res = await axios.post("http://localhost:5000/auth/login", {
         email,
@@ -61,6 +96,7 @@ export default function LoginPage() {
             onChange={(ev) => setEmail(ev.target.value)} // Update username
             className="Login-input"
           />
+           {emailError && <p className="error-message">{emailError}</p>}
           <input
             type="password"
             placeholder="password"
@@ -68,6 +104,7 @@ export default function LoginPage() {
             onChange={(ev) => setPassword(ev.target.value)} // Update password
             className="Login-input"
           />
+          {passwordError && <p className="error-message">{passwordError}</p>}
           <button className="Login-Button">Login</button>
           <div className="register-nav">
             Don't have an account yet?{" "}

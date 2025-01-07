@@ -121,3 +121,13 @@
 .register-nav {
   margin-top: 30px;
 }
+.error-border {
+  border-color: red;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.85rem;
+  margin: 0;
+  padding-left: 2px;
+}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";  
+import { useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
@@ -15,7 +15,7 @@ const TodosList = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-const [joinDate, setJoinDate] = useState("");
+  const [joinDate, setJoinDate] = useState("");
 
   const [data, setData] = useState([]);
   const [range, setRange] = useState(0);
@@ -29,7 +29,7 @@ const [joinDate, setJoinDate] = useState("");
   const ITEMS_PER_PAGE = 5;
 
   // For navigation to profile
-  const navigate = useNavigate();  // Using useNavigate hook
+  const navigate = useNavigate(); // Using useNavigate hook
 
   const navigateToProfile = () => {
     navigate("/profile", { state: { username, email, joinDate } });
@@ -55,28 +55,27 @@ const [joinDate, setJoinDate] = useState("");
     const storedUsername = localStorage.getItem("username");
     const storedEmail = localStorage.getItem("email");
     const storedJoinDate = localStorage.getItem("joinDate");
-  
+
     if (storedUsername) {
       setUsername(storedUsername);
     }
-    
+
     if (storedEmail) {
-      setEmail(storedEmail);  // Assuming you have a setEmail state to store the email
+      setEmail(storedEmail); // Assuming you have a setEmail state to store the email
     }
-  
+
     if (storedJoinDate) {
-      setJoinDate(storedJoinDate);  // Assuming you have a setJoinDate state to store the join date
+      setJoinDate(storedJoinDate); // Assuming you have a setJoinDate state to store the join date
     }
-  
+
     if (!localStorage.getItem("authToken")) {
       showPopup("You need login or signup first....");
       setIsAuthenticated(false);
       return;
     }
-  
+
     fetchData();
   }, []);
-  
 
   useEffect(() => {
     let len = Math.floor(filteredTodos.length / 5);
@@ -138,9 +137,17 @@ const [joinDate, setJoinDate] = useState("");
       </header> */}
       <div className="header">
         <h1>List of All TODOS Created</h1>
-        <div className="username-display" onClick={navigateToProfile} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>
-  Profile
-</div>
+        <div
+          className="username-display"
+          onClick={navigateToProfile}
+          style={{
+            cursor: "pointer",
+            color: "blue",
+            textDecoration: "underline",
+          }}
+        >
+          Profile
+        </div>
         <Logout setIsAuthenticated={setIsAuthenticated} />
       </div>
       <SearchBar
@@ -198,7 +205,9 @@ const [joinDate, setJoinDate] = useState("");
           <div
             key={index}
             className={`${
-              Math.floor(range / ITEMS_PER_PAGE) + 1 === page ? "active" : "unactive"
+              Math.floor(range / ITEMS_PER_PAGE) + 1 === page
+                ? "active"
+                : "unactive"
             }`}
             onClick={() => handlePageChange(index)}
           >

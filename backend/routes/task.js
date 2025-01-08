@@ -80,6 +80,37 @@ router.post("/", authenticateToken, async (req, res) => {
   }
 });
 
+router.get("/search", authenticateToken, async (req, res) => {
+  try {
+    const { task } = req.query;
+
+    // const { error: taskerror } = taskschema.validate({ task: task });
+
+    // if (taskerror) {
+    //   console.log("taskerror");
+    //   return res.status(400).send(taskerror.details[0].message);
+    // }
+
+    if (!task || task.trim().length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Task query parameter is required" });
+    }
+
+    const tasks = await Task.find({ task: { $regex: task, $options: "i" } });
+
+    if (tasks.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No tasks found matching the query" });
+    }
+    console.log(tasks);
+    res.status(200).json(tasks);
+  } catch (err) {
+    res.status(500).json({ error: "Error searching for tasks" });
+  }
+});
+
 router.put("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;

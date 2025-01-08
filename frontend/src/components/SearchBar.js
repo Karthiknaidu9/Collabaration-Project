@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./SearchBar.css";
+import axios from "axios";
 
 const SearchBar = ({
   data,
@@ -9,23 +10,43 @@ const SearchBar = ({
   setSearchQuery,
 }) => {
   const [todos, setTodos] = useState([]);
+  const [erroroccured, setErroroccured] = useState(false);
 
   useEffect(() => {
     setTodos(data);
     setFilteredTodos(data);
+    setErroroccured(false);
   }, []);
 
   useEffect(() => {
-    if (!searchQuery.trim()) {
-      setFilteredTodos(todos);
+    const fetchFilteredTodos = async () => {
+      try {
+        setErroroccured(false);
+        const response = await axios.get(
+          `http://localhost:5000/tasks/search?task=${searchQuery.trim()}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+          }
+        );
+
+        console.log("Response:", response.data);
+        setFilteredTodos(response.data);
+      } catch (err) {
+        setErroroccured(true);
+        setFilteredTodos([]);
+        console.error("Error fetching tasks:", err.message); // Log the error
+      }
+    };
+    if (searchQuery.trim()) {
+      fetchFilteredTodos();
     } else {
-      setFilteredTodos(
-        todos.filter((todo) =>
-          todo.task.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
+      setErroroccured(false);
+      setFilteredTodos(data);
     }
-  }, [searchQuery, todos]);
+  }, [searchQuery]);
+
   return (
     <div className="search-container">
       <input
@@ -36,9 +57,7 @@ const SearchBar = ({
         className="search-input"
       />
       <div className="results-container">
-        {filteredTodos.length === 0 && (
-          <p className="no-tasks">No tasks found</p>
-        )}
+        {erroroccured && <p className="no-tasks">No tasks found</p>}
       </div>
     </div>
   );
